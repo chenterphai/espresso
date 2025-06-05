@@ -20,6 +20,7 @@ const config = {
   PORT: process.env.PORT || 3001,
   NODE_ENV: process.env.NODE_ENV,
   WHITELIST_ORIGINS: ['https://docs.intellinex.com'],
+  MONGODB_URI: process.env.MONGODB_URI,
 };
 
 export default config;
