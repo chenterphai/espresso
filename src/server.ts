@@ -22,6 +22,8 @@ import helmet from 'helmet';
 import config from './config/index.ts';
 import limiter from './lib/rate-limit.ts';
 
+import v1Routes from './routes/v1/index.ts';
+
 const app = express();
 
 // CORS Configuration
@@ -67,16 +69,7 @@ app.use(limiter);
 
 (async () => {
   try {
-    app.get('/', (req, res) => {
-      res.json({
-        status: {
-          code: 0,
-          status: 'Success',
-          msg: 'Successfully',
-        },
-      });
-    });
-
+    app.use('/api/v1', v1Routes);
     app.listen(config.PORT, () => {
       console.log(`Server running http://localhost:${config.PORT}`);
     });
@@ -88,3 +81,23 @@ app.use(limiter);
     }
   }
 })();
+
+const handleServerShutdown = async () => {
+  try {
+    console.log(`Server SHUTDOWN!`);
+    process.exit(0);
+  } catch (error) {
+    console.log(`Error during server shutdown.`, error);
+  }
+};
+
+/**
+ * Listens for termination signals (`SIGTERM` and `SIGINT`).
+ *
+ * - `SIGTERM` is typically sent when stopping a process (e.g. `kill` command or container shutdown).
+ * - `SIGINT` is triggerd when the user interrupts the process (e.g. processing `Ctrl + C`)
+ * - When either signal is received, `handleServerShutdown` is executed to ensure proper cleanup.
+ */
+
+process.on('SIGTERM', handleServerShutdown);
+process.on('SIGINT', handleServerShutdown);
