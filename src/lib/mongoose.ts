@@ -14,7 +14,7 @@
 
 import mongoose from 'mongoose';
 
-import config from '@/config';
+import config from '../config/index.ts';
 
 import type { ConnectOptions } from 'mongoose';
 
@@ -40,5 +40,19 @@ export const connectToDatabase = async (): Promise<void> => {
     console.log('Connected to database successfully');
   } catch (error) {
     console.log(`Connect to database unsuccessfully.`, error);
+    if (error instanceof Error) {
+      throw error;
+    }
+  }
+};
+
+export const disconnectFromDatabase = async (): Promise<void> => {
+  try {
+    await mongoose.disconnect();
+    console.log(`Disconnect from database successfully.`);
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
   }
 };

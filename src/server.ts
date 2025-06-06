@@ -23,6 +23,8 @@ import config from './config/index.ts';
 import limiter from './lib/rate-limit.ts';
 
 import v1Routes from './routes/v1/index.ts';
+import { connectToDatabase, disconnectFromDatabase } from './lib/mongoose.ts';
+import { logger } from './lib/winston.ts';
 
 const app = express();
 
@@ -40,6 +42,7 @@ const corsOptions: CorsOptions = {
         new Error(`CORS Error: ${origin} is not allowed by CORS`),
         false,
       );
+      logger.warn(`CORS Error: ${origin} is not allowed by CORS`);
     }
   },
 };
@@ -69,12 +72,14 @@ app.use(limiter);
 
 (async () => {
   try {
+    await connectToDatabase();
+
     app.use('/api/v1', v1Routes);
     app.listen(config.PORT, () => {
-      console.log(`Server running http://localhost:${config.PORT}`);
+      logger.info(`Server running http://localhost:${config.PORT}`);
     });
   } catch (error) {
-    console.log(error);
+    logger.error(error);
 
     if (config.NODE_ENV === 'production') {
       process.exit(1);
@@ -84,10 +89,12 @@ app.use(limiter);
 
 const handleServerShutdown = async () => {
   try {
-    console.log(`Server SHUTDOWN!`);
+    await disconnectFromDatabase();
+
+    logger.info(`Server SHUTDOWN!`);
     process.exit(0);
   } catch (error) {
-    console.log(`Error during server shutdown.`, error);
+    logger.warn(`Error during server shutdown.`, error);
   }
 };
 

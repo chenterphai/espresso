@@ -21,6 +21,7 @@ const config = {
   NODE_ENV: process.env.NODE_ENV,
   WHITELIST_ORIGINS: ['https://docs.intellinex.com'],
   MONGODB_URI: process.env.MONGODB_URI,
+  LOG_LEVEL: process.env.LOG_LEVEL || 'info',
 };
 
 export default config;
