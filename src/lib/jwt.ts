@@ -1,4 +1,4 @@
-// Copyright 2025 chen
+// Copyright 2025 chenterphai
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Router } from 'express';
-import authRoutes from '../v1/auth.ts';
+import config from '../config/index.ts';
+import jwt from 'jsonwebtoken';
 
-const router = Router();
+import { Types } from 'mongoose';
 
-router.get('/', (req, res) => {
-  res.status(200).json({
-    status: {
-      code: 0,
-      status: 'Success',
-      msg: 'Successfully',
-    },
+export const generateAccessToken = (userId: Types.ObjectId): string => {
+  return jwt.sign({ userId }, config.JWT_SECRET_KEY, {
+    expiresIn: config.ACCESS_TOKEN_EXPIRY,
+    subject: 'accessApi',
   });
-});
+};
 
-router.use('/auth', authRoutes);
-
-export default router;
+export const generateRefreshToken = (userId: Types.ObjectId): string => {
+  return jwt.sign({ userId }, config.JWT_REFRESH_KEY, {
+    expiresIn: config.REFRESH_TOKEN_EXPIRY,
+    subject: 'refreshToken',
+  });
+};

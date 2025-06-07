@@ -1,4 +1,4 @@
-// Copyright 2025 chen
+// Copyright 2025 chenterphai
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Router } from 'express';
-import authRoutes from '../v1/auth.ts';
+import { Schema, model, Types } from 'mongoose';
 
-const router = Router();
+interface IToken {
+  token: string;
+  userId: Types.ObjectId;
+}
 
-router.get('/', (req, res) => {
-  res.status(200).json({
-    status: {
-      code: 0,
-      status: 'Success',
-      msg: 'Successfully',
-    },
-  });
+const tokenSchema = new Schema<IToken>({
+  token: {
+    type: String,
+    required: true,
+  },
+  userId: {
+    type: Schema.Types.ObjectId,
+    required: true,
+  },
 });
 
-router.use('/auth', authRoutes);
-
-export default router;
+export default model<IToken>('Token', tokenSchema);

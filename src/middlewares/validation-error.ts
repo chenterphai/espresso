@@ -1,4 +1,4 @@
-// Copyright 2025 chen
+// Copyright 2025 chenterphai
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Router } from 'express';
-import authRoutes from '../v1/auth.ts';
+import { validationResult } from 'express-validator';
 
-const router = Router();
+import type { Request, Response, NextFunction } from 'express';
 
-router.get('/', (req, res) => {
-  res.status(200).json({
-    status: {
-      code: 0,
-      status: 'Success',
-      msg: 'Successfully',
-    },
-  });
-});
+const validationError = (req: Request, res: Response, next: NextFunction) => {
+  const errors = validationResult(req);
 
-router.use('/auth', authRoutes);
+  if (!errors.isEmpty()) {
+    res.status(400).json({
+      code: 1,
+      errors: errors.mapped(),
+    });
+    return;
+  }
 
-export default router;
+  next();
+};
+
+export default validationError;

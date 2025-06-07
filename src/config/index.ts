@@ -14,6 +14,8 @@
 
 import dotenv from 'dotenv';
 
+import type ms from 'ms';
+
 dotenv.config();
 
 const config = {
@@ -22,6 +24,11 @@ const config = {
   WHITELIST_ORIGINS: ['https://docs.intellinex.com'],
   MONGODB_URI: process.env.MONGODB_URI,
   LOG_LEVEL: process.env.LOG_LEVEL || 'info',
+  JWT_SECRET_KEY: process.env.JWT_SECRET_KEY!,
+  JWT_REFRESH_KEY: process.env.JWT_REFRESH_KEY!,
+  ACCESS_TOKEN_EXPIRY: process.env.ACCESS_TOKEN_EXPIRY as ms.StringValue,
+  REFRESH_TOKEN_EXPIRY: process.env.REFRESH_TOKEN_EXPIRY as ms.StringValue,
+  WHITELIST_ADMIN_MAIL: ['chenterphai61@gmail.com', 'chenterphai@gmail.com'],
 };
 
 export default config;

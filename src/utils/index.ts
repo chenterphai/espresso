@@ -1,4 +1,4 @@
-// Copyright 2025 chen
+// Copyright 2025 chenterphai
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Router } from 'express';
-import authRoutes from '../v1/auth.ts';
+export function genUsername(): string {
+  const prefixUsername = 'user-';
+  const ranUsername = Math.random().toString(36).slice(2);
 
-const router = Router();
+  const username = prefixUsername + ranUsername;
 
-router.get('/', (req, res) => {
-  res.status(200).json({
-    status: {
-      code: 0,
-      status: 'Success',
-      msg: 'Successfully',
-    },
-  });
-});
-
-router.use('/auth', authRoutes);
-
-export default router;
+  return username;
+}
