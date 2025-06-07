@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import { Router } from 'express';
-import { body } from 'express-validator';
+import { body, cookie } from 'express-validator';
 import bcrypt from 'bcrypt';
 
 import register from '../../controllers/v1/auth/register.ts';
 import login from '../../controllers/v1/auth/login.ts';
+import refreshToken from '../../controllers/v1/auth/refresh-token.ts';
 
 import validationError from '../../middlewares/validation-error.ts';
 
@@ -91,6 +92,16 @@ router.post(
     }),
   validationError,
   login,
+);
+
+router.post(
+  '/refresh-token',
+  cookie('refreshToken')
+    .notEmpty()
+    .withMessage('Refresh token is required.')
+    .isJWT()
+    .withMessage('Invalid refresh token.'),
+  refreshToken,
 );
 
 export default router;
