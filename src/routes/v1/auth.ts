@@ -18,6 +18,8 @@ import bcrypt from 'bcrypt';
 
 import register from '../../controllers/v1/auth/register.ts';
 import login from '../../controllers/v1/auth/login.ts';
+import authenticate from '../../middlewares/authenticate.ts';
+import logout from '../../controllers/v1/auth/logout.ts';
 import refreshToken from '../../controllers/v1/auth/refresh-token.ts';
 
 import validationError from '../../middlewares/validation-error.ts';
@@ -103,5 +105,7 @@ router.post(
     .withMessage('Invalid refresh token.'),
   refreshToken,
 );
+
+router.post('/logout', authenticate, logout);
 
 export default router;
