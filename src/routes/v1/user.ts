@@ -23,6 +23,7 @@ import authorize from '../../middlewares/authorize.ts';
 
 // Controllers
 import getCurrentUser from '../../controllers/v1/user/get-current-user.ts';
+import updateCuurrentUser from '../../controllers/v1/user/update-current-user.ts';
 
 // Models
 import User from '../../models/user.ts';
@@ -30,5 +31,37 @@ import User from '../../models/user.ts';
 const router = Router();
 
 router.get('/me', authenticate, authorize(['admin', 'user']), getCurrentUser);
+
+router.put(
+  '/me',
+  authenticate,
+  authorize(['admin', 'user']),
+  body('username')
+    .optional()
+    .trim()
+    .isLength({ max: 20 })
+    .withMessage('Username must be less than 20 chars.')
+    .custom(async (value) => {
+      const userExists = await User.findOne({ username: value });
+      if (userExists) {
+        throw new Error(`Username is already taken.`);
+      }
+    }),
+  body('email')
+    .optional()
+    .trim()
+    .isLength({ max: 50 })
+    .withMessage('Email must be less than 50 chars.')
+    .isEmail()
+    .withMessage('Invalid email address.')
+    .custom(async (value) => {
+      const userExists = await User.findOne({ email: value });
+      if (userExists) {
+        throw new Error(`Email is already taken.`);
+      }
+    }),
+  validationError,
+  updateCuurrentUser,
+);
 
 export default router;
