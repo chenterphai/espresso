@@ -34,7 +34,7 @@ const authorize = (role: AuthRole[]) => {
         res.status(404).json({
           status: {
             code: 1,
-            status: 'Not found',
+            status: 'Not Found',
             msg: 'User not found',
           },
         });

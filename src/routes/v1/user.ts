@@ -24,6 +24,7 @@ import authorize from '../../middlewares/authorize.ts';
 // Controllers
 import getCurrentUser from '../../controllers/v1/user/get-current-user.ts';
 import updateCuurrentUser from '../../controllers/v1/user/update-current-user.ts';
+import deleteCurrentUser from '../../controllers/v1/user/delete-current-user.ts';
 
 // Models
 import User from '../../models/user.ts';
@@ -62,6 +63,13 @@ router.put(
     }),
   validationError,
   updateCuurrentUser,
+);
+
+router.delete(
+  '/me',
+  authenticate,
+  authorize(['admin', 'user']),
+  deleteCurrentUser,
 );
 
 export default router;
