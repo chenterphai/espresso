@@ -1,4 +1,4 @@
-// Copyright 2025 chen
+// Copyright 2025 chenterphai
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,23 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Node Modules
 import { Router } from 'express';
-import authRoutes from '../v1/auth.ts';
-import userRoutes from '../v1/user.ts';
+import { param, query, body } from 'express-validator';
+
+// Middleware
+import authenticate from '../../middlewares/authenticate.ts';
+import validationError from '../../middlewares/validation-error.ts';
+import authorize from '../../middlewares/authorize.ts';
+
+// Controllers
+import getCurrentUser from '../../controllers/v1/user/get-current-user.ts';
+
+// Models
+import User from '../../models/user.ts';
 
 const router = Router();
 
-router.get('/', (req, res) => {
-  res.status(200).json({
-    status: {
-      code: 0,
-      status: 'Success',
-      msg: 'Successfully',
-    },
-  });
-});
-
-router.use('/auth', authRoutes);
-router.use('/user', userRoutes);
+router.get('/me', authenticate, authorize(['admin', 'user']), getCurrentUser);
 
 export default router;

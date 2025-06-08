@@ -52,6 +52,8 @@ const authenticate = (req: Request, res: Response, next: NextFunction) => {
   try {
     const jwtPayload = verifyAccessToken(token) as { userId: Types.ObjectId };
 
+    // logger.info(`JWT PAYLOAD: ${JSON.stringify(jwtPayload, null, 2)}`);
+
     req.userId = jwtPayload.userId;
 
     return next();
