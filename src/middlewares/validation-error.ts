@@ -21,8 +21,15 @@ const validationError = (req: Request, res: Response, next: NextFunction) => {
 
   if (!errors.isEmpty()) {
     res.status(400).json({
-      code: 1,
-      errors: errors.mapped(),
+      status: {
+        code: 1,
+        status: 'Bad Request',
+        msg: 'Bad Request Content.',
+      },
+      content: {
+        success: false,
+        errors: errors.mapped(),
+      },
     });
     return;
   }
