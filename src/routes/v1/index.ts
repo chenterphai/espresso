@@ -15,6 +15,7 @@
 import { Router } from 'express';
 import authRoutes from '../v1/auth.ts';
 import userRoutes from '../v1/user.ts';
+import releaseRoutes from '../v1/release.ts';
 
 const router = Router();
 
@@ -30,5 +31,6 @@ router.get('/', (req, res) => {
 
 router.use('/auth', authRoutes);
 router.use('/user', userRoutes);
+router.use('/release', releaseRoutes);
 
 export default router;
