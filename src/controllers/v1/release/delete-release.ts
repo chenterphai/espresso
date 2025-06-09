@@ -12,23 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Custom module
+// Custom Module
 import { logger } from '../../../lib/winston.ts';
 
 // Models
 import Release from '../../../models/release.ts';
 
-// Types
+// Typea
 import type { Request, Response } from 'express';
 
-const getSingleReplease = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
+const deleteRelease = async (req: Request, res: Response): Promise<void> => {
   try {
-    // Get release ID from URL parameters
     const { id } = req.params as { id: string };
-    // Validate ID format (assuming MongoDB ObjectId)
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       logger.warn('Invalid release ID format', { id });
       res.status(400).json({
@@ -45,12 +40,9 @@ const getSingleReplease = async (
       return;
     }
 
-    // Find release by ID
-    const release = await Release.findById(id).select('-__v').lean(); // .exec() isn't used since `await` directly resolves the query
-
-    // Check if release exists
+    const release = await Release.findById(id);
     if (!release) {
-      logger.warn('Release not found', { id });
+      logger.error(`Release not found`);
       res.status(404).json({
         status: {
           code: 1,
@@ -65,23 +57,17 @@ const getSingleReplease = async (
       return;
     }
 
-    res.status(200).json({
-      status: {
-        code: 0,
-        status: 'OK',
-        msg: 'A release selected.',
-      },
-      content: {
-        success: true,
-        data: release,
-      },
-    });
+    await Release.deleteOne({ _id: id });
+
+    logger.info(`A release has been deleted`);
+
+    res.sendStatus(204);
   } catch (error) {
     res.status(500).json({
       status: {
         code: 1,
         status: 'Internal server error',
-        msg: 'Error while selecting a single release.',
+        msg: 'Error while deleting a single release.',
       },
       content: {
         success: false,
@@ -89,8 +75,8 @@ const getSingleReplease = async (
       },
     });
 
-    logger.error(`Error while selecting a single release.`, error);
+    logger.error(`Error while deleting a single release.`, error);
   }
 };
 
-export default getSingleReplease;
+export default deleteRelease;

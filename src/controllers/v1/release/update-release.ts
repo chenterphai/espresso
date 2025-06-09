@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Custom module
+// Custom Module
 import { logger } from '../../../lib/winston.ts';
 
 // Models
@@ -21,10 +21,8 @@ import Release from '../../../models/release.ts';
 // Types
 import type { Request, Response } from 'express';
 
-const getSingleReplease = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
+const updateRelease = async (req: Request, res: Response): Promise<void> => {
+  const { title, description, tags, status, vote } = req.body;
   try {
     // Get release ID from URL parameters
     const { id } = req.params as { id: string };
@@ -45,12 +43,9 @@ const getSingleReplease = async (
       return;
     }
 
-    // Find release by ID
-    const release = await Release.findById(id).select('-__v').lean(); // .exec() isn't used since `await` directly resolves the query
+    const release = await Release.findById(id).select('-__v').exec();
 
-    // Check if release exists
     if (!release) {
-      logger.warn('Release not found', { id });
       res.status(404).json({
         status: {
           code: 1,
@@ -65,11 +60,19 @@ const getSingleReplease = async (
       return;
     }
 
+    if (title) release.title = title;
+    if (description) release.description = description;
+    if (tags) release.tags = tags;
+    if (status) release.status = status;
+    if (vote) release.vote = vote;
+
+    await release.save();
+
     res.status(200).json({
       status: {
         code: 0,
         status: 'OK',
-        msg: 'A release selected.',
+        msg: 'A release updated successfully',
       },
       content: {
         success: true,
@@ -93,4 +96,4 @@ const getSingleReplease = async (
   }
 };
 
-export default getSingleReplease;
+export default updateRelease;

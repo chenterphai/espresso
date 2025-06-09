@@ -47,7 +47,13 @@ const getAllRelease = async (req: Request, res: Response): Promise<void> => {
     // Query total count and releases in parallel
     const [total, releases] = await Promise.all([
       Release.countDocuments(),
-      Release.find().skip(skip).limit(size).lean(),
+      Release.find()
+        .select('-__v')
+        .skip(skip)
+        .limit(size)
+        .where({ status: 'public' })
+        .sort({ createdAt: 'desc' })
+        .lean(), // .exec() isn't needed because await handles query execution within `Promise.all`
     ]);
 
     // Calculate pagination metadata

@@ -19,6 +19,7 @@ export interface IRelease {
   description: string;
   tags: string[];
   status: 'public' | 'private';
+  vote?: number;
 }
 
 const releaseSchema = new Schema<IRelease>(
@@ -44,6 +45,10 @@ const releaseSchema = new Schema<IRelease>(
         message: 'Status is invalid.',
       },
       default: 'public',
+    },
+    vote: {
+      type: Number,
+      default: 0,
     },
   },
   {

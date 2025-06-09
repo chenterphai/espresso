@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+import validationError from '../../middlewares/validation-error.ts';
 
 // Node Module
 import { Router } from 'express';
@@ -20,7 +21,8 @@ import { body } from 'express-validator';
 import createRelease from '../../controllers/v1/release/create-relaese.ts';
 import getAllRelease from '../../controllers/v1/release/get-all-release.ts';
 import getSingleReplease from '../../controllers/v1/release/get-single-release.ts';
-import validationError from '../../middlewares/validation-error.ts';
+import updateRelease from '../../controllers/v1/release/update-release.ts';
+import deleteRelease from '../../controllers/v1/release/delete-release.ts';
 
 const router = Router();
 
@@ -44,5 +46,7 @@ router.post(
 
 router.get('/', getAllRelease);
 router.get('/:id', getSingleReplease);
+router.put('/:id', validationError, updateRelease);
+router.delete('/:id', validationError, deleteRelease);
 
 export default router;
